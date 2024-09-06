@@ -4,88 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إدارة الشحنات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: #f4f4f4;
+            background: linear-gradient(135deg, #f3f4f7, #e2e3e5);
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .container {
             display: flex;
             justify-content: space-between;
             gap: 20px;
+            width: 80%;
         }
         .person-box {
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
             width: 45%;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s;
+        }
+        .person-box:hover {
+            transform: translateY(-10px);
         }
         h2 {
             text-align: center;
-            color: #333;
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
         }
         label {
             font-size: 1.2em;
-            color: #555;
+            color: #34495e;
+            display: block;
+            margin-bottom: 8px;
         }
         input[type="text"] {
             width: calc(100% - 20px);
-            padding: 10px;
-            margin: 10px 0;
+            padding: 12px;
+            margin: 10px 0 20px 0;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-size: 1em;
         }
         button {
-            padding: 10px 15px;
-            background-color: #28a745;
+            padding: 12px 20px;
+            background-color: #27ae60;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-size: 1.1em;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #218838;
+            background-color: #2ecc71;
         }
         .results {
-            margin-top: 20px;
+            margin-top: 30px;
         }
         .shipment {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            padding: 15px 0;
             border-bottom: 1px solid #eee;
-            font-size: 1.1em;
-            color: #555;
+            font-size: 1.2em;
+            color: #2c3e50;
         }
         .shipment-number, .shipment-profit {
             flex: 1;
         }
         .separator {
             margin: 0 10px;
-            color: #888;
+            color: #bdc3c7;
+            font-weight: bold;
         }
         .delete-btn {
-            background-color: #dc3545;
+            background-color: #e74c3c;
             color: #fff;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 8px 15px;
+            border-radius: 6px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
         .delete-btn:hover {
-            background-color: #c82333;
+            background-color: #c0392b;
+        }
+        /* Hover effect for shipment items */
+        .shipment:hover {
+            background-color: #ecf0f1;
+            border-radius: 6px;
+            padding: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h1 style="text-align: center;">إدارة الشحنات</h1>
+    <h1 style="text-align: center; color: #2c3e50; font-size: 2.5em; margin-bottom: 50px;">إدارة الشحنات</h1>
 
     <div class="container">
         <div class="person-box">
@@ -94,7 +118,7 @@
             <input type="text" id="shipmentNumberMostafa" placeholder="أدخل رقم الشحنة">
             <label for="profitMostafa">الربح:</label>
             <input type="text" id="profitMostafa" placeholder="أدخل الربح">
-            <button onclick="addShipment('mostafa')">إضافة</button>
+            <button onclick="window.addShipment('mostafa')">إضافة</button>
             <div class="results" id="resultsMostafa"></div>
         </div>
         
@@ -104,7 +128,7 @@
             <input type="text" id="shipmentNumberZeinab" placeholder="أدخل رقم الشحنة">
             <label for="profitZeinab">الربح:</label>
             <input type="text" id="profitZeinab" placeholder="أدخل الربح">
-            <button onclick="addShipment('zeinab')">إضافة</button>
+            <button onclick="window.addShipment('zeinab')">إضافة</button>
             <div class="results" id="resultsZeinab"></div>
         </div>
     </div>
@@ -131,7 +155,7 @@
         const db = getDatabase(app);
 
         // إضافة شحنة إلى قاعدة البيانات
-        function addShipment(person) {
+        window.addShipment = function(person) {
             let shipmentNumber, profit, resultDiv;
 
             if (person === 'mostafa') {
@@ -168,7 +192,7 @@
         }
 
         // تحميل الشحنات من Firebase
-        function loadShipments() {
+        window.loadShipments = function() {
             const mostafaRef = ref(db, 'shipments/mostafa');
             const zeinabRef = ref(db, 'shipments/zeinab');
 
@@ -183,7 +207,7 @@
                         <span class="shipment-number">رقم الشحنة: ${data.shipmentNumber}</span>
                         <span class="separator">|</span>
                         <span class="shipment-profit">الربح: ${data.profit}</span>
-                        <button class="delete-btn" onclick="deleteShipment('mostafa', '${childSnapshot.key}')">حذف</button>`;
+                        <button class="delete-btn" onclick="window.deleteShipment('mostafa', '${childSnapshot.key}')">حذف</button>`;
                     resultsMostafa.appendChild(shipmentElement);
                 });
             });
@@ -199,24 +223,20 @@
                         <span class="shipment-number">رقم الشحنة: ${data.shipmentNumber}</span>
                         <span class="separator">|</span>
                         <span class="shipment-profit">الربح: ${data.profit}</span>
-                        <button class="delete-btn" onclick="deleteShipment('zeinab', '${childSnapshot.key}')">حذف</button>`;
+                        <button class="delete-btn" onclick="window.deleteShipment('zeinab', '${childSnapshot.key}')">حذف</button>`;
                     resultsZeinab.appendChild(shipmentElement);
                 });
             });
         }
 
-        // حذف الشحنة من Firebase
-        function deleteShipment(person, id) {
-            const personRef = ref(db, `shipments/${person}/${id}`);
+        // حذف شحنة من Firebase
+        window.deleteShipment = function(person, shipmentId) {
+            const personRef = ref(db, `shipments/${person}/${shipmentId}`);
             remove(personRef);
         }
 
         // تحميل الشحنات عند فتح الصفحة
         window.onload = loadShipments;
-
-        // تصدير الوظائف إلى النطاق العام
-        window.addShipment = addShipment;
-        window.deleteShipment = deleteShipment;
     </script>
 
 </body>
