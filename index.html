@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الشحنات</title>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .person-box {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            width: 45%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-size: 1.2em;
+            color: #555;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .shipment {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 1.1em;
+            color: #555;
+        }
+        .shipment-number, .shipment-profit {
+            flex: 1;
+        }
+        .separator {
+            margin: 0 10px;
+            color: #888;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 style="text-align: center;">إدارة الشحنات</h1>
+
+    <div class="container">
+        <div class="person-box">
+            <h2>مصطفى</h2>
+            <label for="shipmentNumberMostafa">رقم الشحنة:</label>
+            <input type="text" id="shipmentNumberMostafa" placeholder="أدخل رقم الشحنة">
+            <label for="profitMostafa">الربح:</label>
+            <input type="text" id="profitMostafa" placeholder="أدخل الربح">
+            <button onclick="addShipment('mostafa')">إضافة</button>
+            <div class="results" id="resultsMostafa"></div>
+        </div>
+        
+        <div class="person-box">
+            <h2>زينب</h2>
+            <label for="shipmentNumberZeinab">رقم الشحنة:</label>
+            <input type="text" id="shipmentNumberZeinab" placeholder="أدخل رقم الشحنة">
+            <label for="profitZeinab">الربح:</label>
+            <input type="text" id="profitZeinab" placeholder="أدخل الربح">
+            <button onclick="addShipment('zeinab')">إضافة</button>
+            <div class="results" id="resultsZeinab"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // استيراد Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getDatabase, ref, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+
+        // إعداد Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWIuCt6_bqc8cePTTnPuxCU5_9MCFWp7k",
+            authDomain: "mothaf-340a2.firebaseapp.com",
+            projectId: "mothaf-340a2",
+            storageBucket: "mothaf-340a2.appspot.com",
+            messagingSenderId: "1051609064872",
+            appId: "1:1051609064872:web:b2d0984c66f738bd84299d",
+            measurementId: "G-XT56QR494J",
+            databaseURL: "https://mothaf-340a2-default-rtdb.firebaseio.com"
+        };
+
+        // تهيئة Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // إضافة شحنة إلى قاعدة البيانات
+        function addShipment(person) {
+            let shipmentNumber, profit, resultDiv;
+
+            if (person === 'mostafa') {
+                shipmentNumber = document.getElementById('shipmentNumberMostafa').value;
+                profit = document.getElementById('profitMostafa').value;
+                resultDiv = document.getElementById('resultsMostafa');
+            } else {
+                shipmentNumber = document.getElementById('shipmentNumberZeinab').value;
+                profit = document.getElementById('profitZeinab').value;
+                resultDiv = document.getElementById('resultsZeinab');
+            }
+
+            if (shipmentNumber && profit) {
+                const shipmentData = {
+                    shipmentNumber: shipmentNumber,
+                    profit: profit
+                };
+
+                // حفظ البيانات في Firebase
+                const personRef = ref(db, `shipments/${person}`);
+                push(personRef, shipmentData);
+
+                // تفريغ الحقول
+                if (person === 'mostafa') {
+                    document.getElementById('shipmentNumberMostafa').value = '';
+                    document.getElementById('profitMostafa').value = '';
+                } else {
+                    document.getElementById('shipmentNumberZeinab').value = '';
+                    document.getElementById('profitZeinab').value = '';
+                }
+            } else {
+                alert('يرجى ملء جميع الحقول!');
+            }
+        }
+
+        // تحميل الشحنات من Firebase
+        function loadShipments() {
+            const mostafaRef = ref(db, 'shipments/mostafa');
+            const zeinabRef = ref(db, 'shipments/zeinab');
+
+            onValue(mostafaRef, (snapshot) => {
+                const resultsMostafa = document.getElementById('resultsMostafa');
+                resultsMostafa.innerHTML = '';
+                snapshot.forEach(childSnapshot => {
+                    const data = childSnapshot.val();
+                    const shipmentElement = document.createElement('div');
+                    shipmentElement.classList.add('shipment');
+                    shipmentElement.innerHTML = `
+                        <span class="shipment-number">رقم الشحنة: ${data.shipmentNumber}</span>
+                        <span class="separator">|</span>
+                        <span class="shipment-profit">الربح: ${data.profit}</span>
+                        <button class="delete-btn" onclick="deleteShipment('mostafa', '${childSnapshot.key}')">حذف</button>`;
+                    resultsMostafa.appendChild(shipmentElement);
+                });
+            });
+
+            onValue(zeinabRef, (snapshot) => {
+                const resultsZeinab = document.getElementById('resultsZeinab');
+                resultsZeinab.innerHTML = '';
+                snapshot.forEach(childSnapshot => {
+                    const data = childSnapshot.val();
+                    const shipmentElement = document.createElement('div');
+                    shipmentElement.classList.add('shipment');
+                    shipmentElement.innerHTML = `
+                        <span class="shipment-number">رقم الشحنة: ${data.shipmentNumber}</span>
+                        <span class="separator">|</span>
+                        <span class="shipment-profit">الربح: ${data.profit}</span>
+                        <button class="delete-btn" onclick="deleteShipment('zeinab', '${childSnapshot.key}')">حذف</button>`;
+                    resultsZeinab.appendChild(shipmentElement);
+                });
+            });
+        }
+
+        // حذف الشحنة من Firebase
+        function deleteShipment(person, id) {
+            const personRef = ref(db, `shipments/${person}/${id}`);
+            remove(personRef);
+        }
+
+        // تحميل الشحنات عند فتح الصفحة
+        window.onload = loadShipments;
+
+        // تصدير الوظائف إلى النطاق العام
+        window.addShipment = addShipment;
+        window.deleteShipment = deleteShipment;
+    </script>
+
+</body>
+</html>
