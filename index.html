@@ -1,243 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة الشحنات</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>صفحة المشرف - أفكار تطوير المادة</title>
     <style>
         body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #f3f4f7, #e2e3e5);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
             margin: 0;
             padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            direction: rtl;
         }
         .container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            width: 80%;
-        }
-        .person-box {
+            max-width: 1000px;
+            margin: 0 auto;
             background-color: white;
-            border-radius: 12px;
-            padding: 25px;
-            width: 45%;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        .person-box:hover {
-            transform: translateY(-10px);
-        }
-        h2 {
+        h1 {
+            color: #2c3e50;
             text-align: center;
-            color: #2c3e50;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
+            margin-bottom: 30px;
         }
-        label {
-            font-size: 1.2em;
-            color: #34495e;
-            display: block;
-            margin-bottom: 8px;
+        .ideas-list {
+            margin-top: 20px;
         }
-        input[type="text"] {
-            width: calc(100% - 20px);
-            padding: 12px;
-            margin: 10px 0 20px 0;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1em;
+        .idea-item {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
         }
-        button {
-            padding: 12px 20px;
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #2ecc71;
-        }
-        .results {
-            margin-top: 30px;
-        }
-        .shipment {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 1.2em;
-            color: #2c3e50;
-        }
-        .shipment-number, .shipment-profit {
-            flex: 1;
-        }
-        .separator {
-            margin: 0 10px;
-            color: #bdc3c7;
+        .student-name {
             font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .idea-text {
+            color: #34495e;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .timestamp {
+            font-size: 12px;
+            color: #7f8c8d;
         }
         .delete-btn {
             background-color: #e74c3c;
-            color: #fff;
+            color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
+            padding: 5px 10px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            position: absolute;
+            top: 15px;
+            left: 15px;
         }
         .delete-btn:hover {
             background-color: #c0392b;
         }
-        /* Hover effect for shipment items */
-        .shipment:hover {
-            background-color: #ecf0f1;
-            border-radius: 6px;
-            padding: 10px;
+        .no-ideas {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 20px;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-
-    <h1 style="text-align: center; color: #2c3e50; font-size: 2.5em; margin-bottom: 50px;">إدارة الشحنات</h1>
-
     <div class="container">
-        <div class="person-box">
-            <h2>مصطفى</h2>
-            <label for="shipmentNumberMostafa">رقم الشحنة:</label>
-            <input type="text" id="shipmentNumberMostafa" placeholder="أدخل رقم الشحنة">
-            <label for="profitMostafa">الربح:</label>
-            <input type="text" id="profitMostafa" placeholder="أدخل الربح">
-            <button onclick="window.addShipment('mostafa')">إضافة</button>
-            <div class="results" id="resultsMostafa"></div>
+        <h1>أفكار الطلاب لتطوير الجانب العملي لمادة الأجهزة</h1>
+        <div class="ideas-list" id="ideasList">
+            <div class="no-ideas">جاري تحميل الأفكار...</div>
         </div>
-        
-        <div class="person-box">
-            <h2>زينب</h2>
-            <label for="shipmentNumberZeinab">رقم الشحنة:</label>
-            <input type="text" id="shipmentNumberZeinab" placeholder="أدخل رقم الشحنة">
-            <label for="profitZeinab">الربح:</label>
-            <input type="text" id="profitZeinab" placeholder="أدخل الربح">
-            <button onclick="window.addShipment('zeinab')">إضافة</button>
-            <div class="results" id="resultsZeinab"></div>
+        <div class="back-link">
+            <a href="index.html">العودة إلى صفحة الإرسال</a>
         </div>
     </div>
 
+    <!-- Firebase SDK -->
     <script type="module">
-        // استيراد Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-        import { getDatabase, ref, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js";
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+        import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-database.js";
 
-        // إعداد Firebase
+        // Your web app's Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyBWIuCt6_bqc8cePTTnPuxCU5_9MCFWp7k",
-            authDomain: "mothaf-340a2.firebaseapp.com",
-            projectId: "mothaf-340a2",
-            storageBucket: "mothaf-340a2.appspot.com",
-            messagingSenderId: "1051609064872",
-            appId: "1:1051609064872:web:b2d0984c66f738bd84299d",
-            measurementId: "G-XT56QR494J",
-            databaseURL: "https://mothaf-340a2-default-rtdb.firebaseio.com"
+            apiKey: "AIzaSyCAko7XItvf5nE6kF9AiFTyS9aag5HRzAY",
+            authDomain: "data11-11740.firebaseapp.com",
+            databaseURL: "https://data11-11740-default-rtdb.firebaseio.com",
+            projectId: "data11-11740",
+            storageBucket: "data11-11740.firebasestorage.app",
+            messagingSenderId: "317387675546",
+            appId: "1:317387675546:web:ee41dae1ab9c8fe76dcc23",
+            measurementId: "G-NN9QMS0TYG"
         };
 
-        // تهيئة Firebase
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        const database = getDatabase(app);
 
-        // إضافة شحنة إلى قاعدة البيانات
-        window.addShipment = function(person) {
-            let shipmentNumber, profit, resultDiv;
+        // Reference to the ideas in the database
+        const ideasRef = ref(database, 'ideas');
 
-            if (person === 'mostafa') {
-                shipmentNumber = document.getElementById('shipmentNumberMostafa').value;
-                profit = document.getElementById('profitMostafa').value;
-                resultDiv = document.getElementById('resultsMostafa');
-            } else {
-                shipmentNumber = document.getElementById('shipmentNumberZeinab').value;
-                profit = document.getElementById('profitZeinab').value;
-                resultDiv = document.getElementById('resultsZeinab');
-            }
-
-            if (shipmentNumber && profit) {
-                const shipmentData = {
-                    shipmentNumber: shipmentNumber,
-                    profit: profit
-                };
-
-                // حفظ البيانات في Firebase
-                const personRef = ref(db, `shipments/${person}`);
-                push(personRef, shipmentData);
-
-                // تفريغ الحقول
-                if (person === 'mostafa') {
-                    document.getElementById('shipmentNumberMostafa').value = '';
-                    document.getElementById('profitMostafa').value = '';
-                } else {
-                    document.getElementById('shipmentNumberZeinab').value = '';
-                    document.getElementById('profitZeinab').value = '';
-                }
-            } else {
-                alert('يرجى ملء جميع الحقول!');
-            }
-        }
-
-        // تحميل الشحنات من Firebase
-        window.loadShipments = function() {
-            const mostafaRef = ref(db, 'shipments/mostafa');
-            const zeinabRef = ref(db, 'shipments/zeinab');
-
-            onValue(mostafaRef, (snapshot) => {
-                const resultsMostafa = document.getElementById('resultsMostafa');
-                resultsMostafa.innerHTML = '';
-                snapshot.forEach(childSnapshot => {
-                    const data = childSnapshot.val();
-                    const shipmentElement = document.createElement('div');
-                    shipmentElement.classList.add('shipment');
-                    shipmentElement.innerHTML = `
-                        <span class="shipment-number">رقم الشحنة: ${data.shipmentNumber}</span>
-                        <span class="separator">|</span>
-                        <span class="shipment-profit">الربح: ${data.profit}</span>
-                        <button class="delete-btn" onclick="window.deleteShipment('mostafa', '${childSnapshot.key}')">حذف</button>`;
-                    resultsMostafa.appendChild(shipmentElement);
+        // Listen for changes in the ideas data
+        onValue(ideasRef, (snapshot) => {
+            const ideasList = document.getElementById('ideasList');
+            ideasList.innerHTML = '';
+            
+            const data = snapshot.val();
+            
+            if (data) {
+                // Convert object to array and sort by timestamp (newest first)
+                const ideasArray = Object.entries(data).map(([key, value]) => ({
+                    id: key,
+                    ...value
+                })).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                // Display each idea
+                ideasArray.forEach(idea => {
+                    const ideaElement = document.createElement('div');
+                    ideaElement.className = 'idea-item';
+                    
+                    const formattedDate = new Date(idea.timestamp).toLocaleString('ar-SA');
+                    
+                    ideaElement.innerHTML = `
+                        <button class="delete-btn" data-id="${idea.id}">حذف</button>
+                        <div class="student-name">${idea.studentName}</div>
+                        <div class="idea-text">${idea.idea}</div>
+                        <div class="timestamp">${formattedDate}</div>
+                    `;
+                    
+                    ideasList.appendChild(ideaElement);
                 });
-            });
-
-            onValue(zeinabRef, (snapshot) => {
-                const resultsZeinab = document.getElementById('resultsZeinab');
-                resultsZeinab.innerHTML = '';
-                snapshot.forEach(childSnapshot => {
-                    const data = childSnapshot.val();
-                    const shipmentElement = document.createElement('div');
-                    shipmentElement.classList.add('shipment');
-                    shipmentElement.innerHTML = `
-                        <span class="shipment-number">رقم الشحنة: ${data.shipmentNumber}</span>
-                        <span class="separator">|</span>
-                        <span class="shipment-profit">الربح: ${data.profit}</span>
-                        <button class="delete-btn" onclick="window.deleteShipment('zeinab', '${childSnapshot.key}')">حذف</button>`;
-                    resultsZeinab.appendChild(shipmentElement);
+                
+                // Add event listeners to delete buttons
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const ideaId = this.getAttribute('data-id');
+                        const ideaRef = ref(database, `ideas/${ideaId}`);
+                        
+                        if (confirm('هل أنت متأكد من حذف هذه الفكرة؟')) {
+                            remove(ideaRef).catch(error => {
+                                console.error('Error deleting idea:', error);
+                                alert('حدث خطأ أثناء حذف الفكرة');
+                            });
+                        }
+                    });
                 });
-            });
-        }
-
-        // حذف شحنة من Firebase
-        window.deleteShipment = function(person, shipmentId) {
-            const personRef = ref(db, `shipments/${person}/${shipmentId}`);
-            remove(personRef);
-        }
-
-        // تحميل الشحنات عند فتح الصفحة
-        window.onload = loadShipments;
+            } else {
+                ideasList.innerHTML = '<div class="no-ideas">لا توجد أفكار مضافة بعد</div>';
+            }
+        }, (error) => {
+            console.error('Error fetching ideas:', error);
+            document.getElementById('ideasList').innerHTML = '<div class="no-ideas">حدث خطأ في تحميل الأفكار</div>';
+        });
     </script>
-
 </body>
 </html>
